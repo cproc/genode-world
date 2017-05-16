@@ -1,0 +1,12 @@
+LICENSE   := zlib
+VERSION   := 2.0.26
+DOWNLOADS := sdl_gfx.archive
+
+URL(sdl_gfx) := http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-$(VERSION).tar.gz
+SHA(sdl_gfx) := 684b30dfef382c5ab6e18330a0a71148aab5e863
+DIR(sdl_gfx) := src/lib/sdl_gfx
+
+#PATCHES := src/lib/sdl_net/SDLnet.patch src/lib/sdl_net/SDL_net.h.patch
+
+DIRS := include/SDL
+DIR_CONTENT(include/SDL) := src/lib/sdl_gfx/*.h
