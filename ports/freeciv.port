@@ -1,0 +1,7 @@
+LICENSE   := GPLv2
+VERSION   := 2.5.7
+DOWNLOADS := freeciv.archive
+
+URL(freeciv) := http://files.freeciv.org/stable/freeciv-$(VERSION).tar.bz2
+SHA(freeciv) := e1376bbf75bb343f3a4a8fb3ac9bebcd6cd7f382
+DIR(freeciv) := src/app/freeciv

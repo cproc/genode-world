@@ -1,0 +1,114 @@
+append build_components {
+	drivers/audio
+	drivers/nic
+	server/nic_bridge
+	app/freeciv-server
+	app/freeciv-sdl
+}
+
+source ${genode_dir}/repos/base/run/platform_drv.inc
+
+append app_config {
+	<start name="nic_drv">
+		<binary name="} [nic_drv_binary] {"/>
+		<resource name="RAM" quantum="4M"/>
+		<provides><service name="Nic"/></provides>
+		<config>
+			<nic tap="tap0"/>
+		</config>
+	</start>
+	<start name="audio_drv">
+		<binary name="} [audio_drv_binary] {"/>
+		<resource name="RAM" quantum="8M"/>
+		<provides> <service name="Audio_out"/> </provides>
+		<config/>
+	</start>
+	<start name="nic_bridge" caps="200">
+		<resource name="RAM" quantum="24M"/>
+		<provides><service name="Nic"/></provides>
+		<config>
+			<policy label_prefix="freeciv-server" ip_addr="10.0.2.52"/>
+			<policy label_prefix="freeciv-sdl" ip_addr="10.0.2.53"/>
+		</config>
+		<route>
+			<service name="Nic"> <child name="nic_drv"/> </service>
+			<any-service> <parent/> <any-child/> </any-service>
+		</route>
+	</start>
+	<start name="freeciv-server" caps="200">
+		<resource name="RAM" quantum="128M"/>
+		<route>
+			<service name="Nic"> <child name="nic_bridge"/> </service>
+			<any-service> <parent/> <any-child/> </any-service>
+		</route>
+		<config ld_verbose="yes">
+			<vfs>
+				<tar name="freeciv_data.tar"/>
+				<dir name="dev"> <log/> <null/> </dir>
+				<dir name="socket">
+					<lxip ip_addr="10.0.2.52" netmask="255.255.255.0" gateway="0.0.0.0" nameserver="0.0.0.0"/>
+				</dir>
+			</vfs>
+			<libc stdout="/dev/log" stderr="/dev/log" stdin="/dev/null" socket="/socket"/>
+			<arg value="freeciv-server"/>
+			<arg value="-b"/>
+			<arg value="10.0.2.52"/>
+			<arg value="-d"/>
+			<arg value="2"/>
+		</config>
+	</start>
+	<start name="freeciv-sdl" caps="300">
+		<resource name="RAM" quantum="128M"/>
+		<route>
+			<service name="Nic"> <child name="nic_bridge"/> </service>
+			<any-service> <parent/> <any-child/> </any-service>
+		</route>
+		<config ld_verbose="yes">
+			<vfs>
+				<tar name="freeciv_data.tar"/>
+				<dir name="dev"> <log/> </dir>
+				<dir name="socket">
+					<lxip ip_addr="10.0.2.53" netmask="255.255.255.0" gateway="0.0.0.0" nameserver="0.0.0.0"/>
+				</dir>
+			</vfs>
+			<libc stdout="/dev/log" stderr="/dev/log" socket="/socket"/>
+			<arg value="freeciv-sdl"/>
+			<arg value="-d"/>
+			<arg value="3"/>
+			<arg value="-s"/>
+			<arg value="10.0.2.52"/>
+			<arg value="-a"/>
+		</config>
+	</start>}
+
+append boot_modules {
+	nic_bridge
+	freeciv-server
+	freeciv-sdl
+	curl.lib.so
+	freetype.lib.so
+	jpeg.lib.so
+	libc.lib.so
+	libc_resolv.lib.so
+	libcrypto.lib.so
+	libiconv.lib.so
+	libm.lib.so
+	libpng.lib.so
+	libssh.lib.so
+	libssl.lib.so
+	lxip.lib.so
+	posix.lib.so
+	pthread.lib.so
+	sdl.lib.so
+	sdl_gfx.lib.so
+	sdl_image.lib.so
+	sdl_mixer.lib.so
+	sdl_ttf.lib.so
+	vfs_lxip.lib.so
+	zlib.lib.so
+	freeciv_data.tar
+} [nic_drv_binary] { } [audio_drv_binary]
+
+append qemu_args " -net nic,model=e1000 -net user -soundhw es1370"
+
+source ${genode_dir}/repos/world/run/framebuffer_app.inc

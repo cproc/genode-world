@@ -27,15 +27,6 @@ lappend_if [have_spec usb] build_components drivers/usb
 
 source ${genode_dir}/repos/base/run/platform_drv.inc
 
-# override default platform driver policy
-proc platform_drv_policy {} {
-	return {
-			<policy label_prefix="ps2_drv"> <device name="PS2"/> </policy>
-			<policy label_prefix="usb_drv"> <pci class="USB"/> </policy>
-			<policy label_prefix="fb_drv">  <pci class="VGA"/> </policy>
-			<policy label_prefix="audio_drv"> <pci class="AUDIO"/> <pci class="HDAUDIO"/> </policy>}
-}
-
 append_platform_drv_build_components
 
 build $build_components
@@ -60,6 +51,7 @@ append config {
 		<service name="CPU"/>
 		<service name="LOG"/>
 	</parent-provides>
+	<default caps="100"/>
 	<default-route>
 		<any-service> <parent/> <any-child/> </any-service>
 	</default-route>}
@@ -135,7 +127,5 @@ lappend_if [have_spec          usb] boot_modules usb_drv
 append_platform_drv_boot_modules
 
 build_boot_image $boot_modules
-
-append qemu_args " -m 256 "
 
 run_genode_until forever
