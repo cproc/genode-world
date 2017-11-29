@@ -776,6 +776,37 @@ g_once_init_enter T
 g_once_init_enter_impl T
 g_once_init_leave T
 g_open T
+g_option_context_add_group T
+g_option_context_add_main_entries T
+g_option_context_free T
+g_option_context_get_description T
+g_option_context_get_help T
+g_option_context_get_help_enabled T
+g_option_context_get_ignore_unknown_options T
+g_option_context_get_main_group T
+g_option_context_get_strict_posix T
+g_option_context_get_summary T
+g_option_context_new T
+g_option_context_parse T
+g_option_context_parse_strv T
+g_option_context_set_description T
+g_option_context_set_help_enabled T
+g_option_context_set_ignore_unknown_options T
+g_option_context_set_main_group T
+g_option_context_set_strict_posix T
+g_option_context_set_summary T
+g_option_context_set_translate_func T
+g_option_context_set_translation_domain T
+g_option_error_quark T
+g_option_group_add_entries T
+g_option_group_free T
+g_option_group_new T
+g_option_group_ref T
+g_option_group_set_error_hook T
+g_option_group_set_parse_hooks T
+g_option_group_set_translate_func T
+g_option_group_set_translation_domain T
+g_option_group_unref T
 g_parse_debug_string T
 g_path_get_basename T
 g_path_get_dirname T
@@ -1618,14 +1649,14 @@ g_wakeup_get_pollfd T
 g_wakeup_new T
 g_wakeup_signal T
 g_warn_message T
-glib_binary_age R
+glib_binary_age R 4
 glib_check_version T
 glib_gettext T
 glib_init T
-glib_interface_age R
-glib_major_version R
+glib_interface_age R 4
+glib_major_version R 4
 glib_mem_profiler_table D 8
-glib_micro_version R
-glib_minor_version R
+glib_micro_version R 4
+glib_minor_version R 4
 glib_on_error_halt D 4
 glib_pgettext T
