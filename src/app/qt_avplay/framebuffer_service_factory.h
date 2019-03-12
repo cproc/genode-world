@@ -28,7 +28,7 @@
 
 struct Framebuffer_service_factory
 {
-	virtual Genode::Service &create(Genode::Session_state::Args const &args) = 0;
+	virtual Genode::Service &create() = 0;
 
 	typedef Genode::Single_session_service<Framebuffer::Session> Session_service;
 };
@@ -71,11 +71,11 @@ class Nitpicker_framebuffer_service_factory : public Framebuffer_service_factory
 		  _max_width(max_width), _max_height(max_height)
 		{ }
 
-		Genode::Service &create(Genode::Session_state::Args const &args)
+		Genode::Service &create()
 		{
 			Framebuffer::Mode const
-				mode(_limited_size(_session_arg(args, "fb_width"), _max_width),
-		         	 _limited_size(_session_arg(args, "fb_height"), _max_height),
+				mode(_limited_size(0, _max_width),
+		         	 _limited_size(0, _max_height),
 		         	 _nitpicker.mode().format());
 			_nitpicker.buffer(mode, false);
 
@@ -94,6 +94,7 @@ class Nitpicker_framebuffer_service_factory : public Framebuffer_service_factory
 			Framebuffer::Session_client framebuffer(_nitpicker.framebuffer_session());
 
 			Framebuffer::Mode framebuffer_mode = framebuffer.mode();
+			Genode::log("framebuffer: ", framebuffer_mode.width(), ", ", framebuffer_mode.height());
 			_nitpicker_view_widget.setNitpickerView(&_nitpicker,
 			                                        nitpicker_view_handle,
 			                                        0, 0,
@@ -102,40 +103,5 @@ class Nitpicker_framebuffer_service_factory : public Framebuffer_service_factory
 			return _service.service();
 		}
 };
-
-
-class Filter_framebuffer_service_factory : public Framebuffer_service_factory
-{
-	private:
-
-		typedef Genode::Slave::Connection<Framebuffer::Connection> Framebuffer_connection;
-
-		Genode::Slave::Policy  &_policy;
-
-		Framebuffer_connection *_slave_connection { nullptr };
-		Session_service        *_service { nullptr };
-
-	public:
-
-		Filter_framebuffer_service_factory(Genode::Slave::Policy &policy)
-		: _policy(policy)
-		{ }
-
-		~Filter_framebuffer_service_factory()
-		{
-			delete _service;
-			delete _slave_connection;
-		}
-
-		Genode::Service &create(Genode::Session_state::Args const &args)
-		{
-			_slave_connection = new Framebuffer_connection(_policy, args);
-
-			_service = new Session_service(*_slave_connection);
-
-			return _service->service();
-		}
-};
-
 
 #endif /* _FRAMEBUFFER_SERVICE_FACTORY_H_ */

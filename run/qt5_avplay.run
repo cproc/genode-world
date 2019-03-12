@@ -17,6 +17,8 @@ set feature(Audio_out) 1
 
 append build_components [qt5_build_components feature]
 
+append build_components { app/avplay app/qt_avplay }
+
 build $build_components
 
 #
@@ -47,7 +49,7 @@ append config {
 append config [qt5_start_nodes feature]
 
 append config {
-	<start name="qt_avplay" caps="400">
+	<start name="qt_avplay" caps="500">
 		<resource name="RAM" quantum="2G"/>
 		<config>
 			<vfs>
@@ -86,6 +88,8 @@ append boot_modules [qt5_boot_modules feature]
 
 append boot_modules {
 	mediafile
+	avplay
+	qt_avplay
 }
 
 build_boot_image $boot_modules
