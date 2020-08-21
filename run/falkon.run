@@ -62,6 +62,7 @@ append config {
 			<vfs>
 				<jitterentropy name="random"/>
 				<jitterentropy name="urandom"/>
+				<lwip ip_addr="10.0.10.2" netmask="255.255.255.0" gateway="10.0.10.1" nameserver="10.0.0.2"/>
 			</vfs>
 			<default-policy writeable="no" root="/"/>
 		</config>
@@ -96,7 +97,7 @@ append config {
 				</dir>
 				<dir name="shm"> <qtwebengine_shm/> </dir>
 				<dir name="socket">
-					<lwip dhcp="yes"/>
+					<lwip ip_addr="10.0.10.2" netmask="255.255.255.0" gateway="10.0.10.1" nameserver="10.0.0.2"/>
 					<!--<fs/>-->
 				</dir>
 				<dir name="tmp"> <ram/> </dir>
