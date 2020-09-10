@@ -352,7 +352,7 @@ proc drivers_start_nodes { } {
 			<binary name="black_hole"/>
 			<resource name="RAM" quantum="8M"/>
 			<provides> <service name="Audio_out"/> </provides>
-			<config />
+			<config> <audio_out/> </config>
 		</start>
 	}
 
