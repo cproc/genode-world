@@ -99,7 +99,11 @@ append config {
 				<ram/>
 			</vfs>
 			<libc stdout="/dev/log" stderr="/dev/log" pipe="/dev/pipe" rtc="/dev/rtc" socket="/socket" pid="1">
-				<!--<pthread placement="single-cpu"/>-->
+				<pthread placement="manual">
+					<thread id="0"  cpu="1"/>
+					<thread id="11" cpu="2"/>
+					<thread id="12" cpu="3"/>
+				</pthread>
 			</libc>
 			<arg value="falkon"/>
 			<arg value="--single-process"/>
