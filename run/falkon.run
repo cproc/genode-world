@@ -82,7 +82,7 @@ append config {
 <!--
 	<start name="top">
 		<resource name="RAM" quantum="2M"/>
-		<config period_ms="2000"/>
+		<config period_ms="10000"/>
 	</start>
 -->
 
@@ -124,7 +124,12 @@ append config {
 			</vfs>
 			<libc stdout="/dev/log" stderr="/dev/log" pipe="/dev/pipe" rtc="/dev/rtc" socket="/socket" pid="1">
 				<mmap align_log2="21"/>
-				<!--<pthread placement="single-cpu"/>-->
+				<pthread placement="manual">
+					<thread id="0"  cpu="1"/>
+					<thread id="5"  cpu="1"/>
+					<thread id="11" cpu="2"/>
+					<thread id="12" cpu="3"/>
+				</pthread>
 			</libc>
 			<arg value="falkon"/>
 			<arg value="--single-process"/>
