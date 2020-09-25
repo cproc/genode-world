@@ -46,6 +46,9 @@ class Dataspace_file_system : public Vfs::File_system
 
 			public:
 
+				unsigned int open_count   { 0 };
+				bool unlink_on_last_close { false };
+
 				bool matches(const char *path)
 				{
 					return (Genode::strlen(path) == (Genode::strlen(_filename.string()))) &&
@@ -59,6 +62,7 @@ class Dataspace_file_system : public Vfs::File_system
 
 				~Dataspace_vfs_file()
 				{
+Genode::error("~Dataspace_vfs_file()");
 					if (_length > 0)
 						_ram.free(ds_cap);
 				}
@@ -75,7 +79,9 @@ class Dataspace_file_system : public Vfs::File_system
 					_length = size;
 
 					ds_cap = _ram.alloc(size);
-
+static unsigned long allocated;
+allocated += size;
+Genode::log("shm: ", allocated);
 					return FTRUNCATE_OK;
 				}
 		};
@@ -146,7 +152,20 @@ class Dataspace_file_system : public Vfs::File_system
 				                    File_io_service   &fs,
 				                    Genode::Allocator &alloc,
 				                    Dataspace_vfs_file &file)
-				: Dataspace_vfs_handle(ds, fs, alloc, 0), _file(file) { }
+				: Dataspace_vfs_handle(ds, fs, alloc, 0), _file(file)
+				{
+Genode::log("Dataspace_vfs_file_handle()");
+					//_file.open_count++;
+				}
+
+				~Dataspace_vfs_file_handle()
+				{
+Genode::log("~Dataspace_vfs_file_handle()");
+					_file.open_count--;
+//					if ((_file.open_count == 0) && (_file.unlink_on_last_close)) {
+//						Genode::error("unlinking file on last close");
+//					}
+				}
 
 				Read_result read(char *, file_size, file_size &) override
 				{
@@ -158,6 +177,7 @@ class Dataspace_file_system : public Vfs::File_system
 					return _file.truncate(len);
 				}
 
+				Dataspace_vfs_file &file() { return _file; }
 		};
 
 		Vfs::Env &_env;
@@ -313,7 +333,13 @@ class Dataspace_file_system : public Vfs::File_system
 			if (!file)
 				return UNLINK_ERR_NO_ENTRY;
 
-			destroy(_env.alloc(), file);
+			if (file->open_count == 0) {
+				Genode::error("unlinking file immediately");
+				destroy(_env.alloc(), file);
+			} else {
+				Genode::error("unlinking file later");
+				file->unlink_on_last_close = true;
+			}
 
 			return UNLINK_OK;
 		}
