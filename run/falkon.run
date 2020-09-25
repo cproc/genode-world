@@ -116,6 +116,7 @@ append config {
 				<ram/>
 			</vfs>
 			<libc stdout="/dev/log" stderr="/dev/log" pipe="/dev/pipe" rtc="/dev/rtc" socket="/socket" pid="1">
+				<mmap align="21"/>
 				<pthread placement="manual">
 					<thread id="0"  cpu="1"/>
 					<thread id="5"  cpu="1"/>
