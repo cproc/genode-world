@@ -4703,9 +4703,10 @@ static void construct_component(Libc::Env &env)
 	exit(main(genode_argc, genode_argv, genode_envp));
 }
 
-
+extern "C" void wait_for_continue();
 void Libc::Component::construct(Libc::Env &env)
 {
+//wait_for_continue();
 	vm_reg.construct(env);
 
 	Libc::with_libc([&] () { construct_component(env); });
