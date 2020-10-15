@@ -95,4 +95,5 @@ build_boot_image $boot_modules
 
 append qemu_args " -nographic -serial mon:stdio "
 
+#run_genode_until forever
 run_genode_until "child \"java\" exited with exit value 0" 60
