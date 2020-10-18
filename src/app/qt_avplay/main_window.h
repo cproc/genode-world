@@ -77,10 +77,10 @@ class Main_window : public Compound_widget<QWidget, QVBoxLayout>
 
 		Mediafile_name              _mediafile_name;
 
-		QMember<QGenodeViewWidget>  _avplay_widget;
+		QGenodeViewWidget          *_avplay_widget;
 		QMember<Control_bar>        _control_bar;
 
-		Gui::Session_component _gui_session_component { _env, _ep, *_avplay_widget };
+		Gui::Session_component _gui_session_component { _env, _ep, _avplay_widget };
 
 		Gui_service::Single_session_factory _gui_factory { _gui_session_component };
 

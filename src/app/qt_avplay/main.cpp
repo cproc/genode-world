@@ -14,6 +14,9 @@
 /* Qt includes */
 #include <QApplication>
 
+/* qt5_component includes */
+#include <qt5_component/qpa_init.h>
+
 /* qt_avplay includes */
 #include "main_window.h"
 
@@ -39,7 +42,7 @@ void Libc::Component::construct(Libc::Env &env)
 {
 	Libc::with_libc([&] {
 
-		initialize_qt_gui(env);
+		qpa_init(env);
 
 		int argc = 1;
 		char const *argv[] = { "qt_avplay", 0 };

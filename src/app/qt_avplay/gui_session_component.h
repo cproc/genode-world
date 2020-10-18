@@ -18,7 +18,7 @@
 #include <gui_session/connection.h>
 
 /* Qt includes */
-#include <qgenodeplatformwindow.h>
+#include <qpa_genode/qgenodeplatformwindow.h>
 #include <qgenodeviewwidget/qgenodeviewwidget.h>
 
 
@@ -32,7 +32,7 @@ struct Gui::Session_component : Rpc_object<Gui::Session>
 {
 	Env               &_env;
 	Entrypoint        &_ep;
-	QGenodeViewWidget &_genode_view_widget;
+	QGenodeViewWidget *_genode_view_widget;
 
 	Gui::Connection _connection;
 
@@ -53,8 +53,8 @@ struct Gui::Session_component : Rpc_object<Gui::Session>
 		case Command::OP_GEOMETRY:
 			{
 				Gui::Rect rect = command.geometry.rect;
-				_genode_view_widget.setGenodeView(&_connection, _view_handle,
-				                                  0, 0, rect.w(), rect.h());
+				_genode_view_widget->setGenodeView(&_connection, _view_handle,
+				                                   0, 0, rect.w(), rect.h());
 				return;
 			}
 
@@ -68,7 +68,7 @@ struct Gui::Session_component : Rpc_object<Gui::Session>
 	}
 
 	Session_component(Env &env, Entrypoint &ep,
-	                  QGenodeViewWidget &genode_view_widget)
+	                  QGenodeViewWidget *genode_view_widget)
 	:
 		_env(env), _ep(ep),
 		_genode_view_widget(genode_view_widget),
@@ -96,7 +96,7 @@ struct Gui::Session_component : Rpc_object<Gui::Session>
 	{
 		QGenodePlatformWindow *platform_window =
 			dynamic_cast<QGenodePlatformWindow*>(_genode_view_widget
-				.window()->windowHandle()->handle());
+				->window()->windowHandle()->handle());
 
 		Gui::Session::View_handle parent_view_handle =
 			_connection.view_handle(platform_window->view_cap());
@@ -135,9 +135,9 @@ struct Gui::Session_component : Rpc_object<Gui::Session>
 		Framebuffer::Mode new_mode {
 			.area = {
 				Genode::min(connection_mode.area.w(),
-				            (unsigned)_genode_view_widget.maximumWidth()),
+				            (unsigned)_genode_view_widget->maximumWidth()),
 				Genode::min(connection_mode.area.h(),
-				            (unsigned)_genode_view_widget.maximumHeight())
+				            (unsigned)_genode_view_widget->maximumHeight())
 			}};
 		return new_mode;
 	}

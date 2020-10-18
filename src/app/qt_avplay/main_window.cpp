@@ -24,6 +24,20 @@ Main_window::Main_window(Genode::Env &env)
 	_mediafile_name(env),
 	_control_bar(_gui_session_component.input_component())
 {
+	QPluginLoader plugin_loader("/qt/plugins/qgenodeviewwidget/libqgenodeviewwidget.lib.so");
+
+	QObject *plugin = plugin_loader.instance();
+
+	if (!plugin)
+		qFatal("Error: Could not load QGenodeViewWidget Qt plugin");
+
+	QGenodeViewWidgetInterface *genode_view_widget_interface =
+		qobject_cast<QGenodeViewWidgetInterface*>(plugin);
+
+	_avplay_widget = static_cast<QGenodeViewWidget*>(
+		genode_view_widget_interface->createWidget()
+	);
+
 	/* add widgets to layout */
 
 	_layout->addWidget(_avplay_widget);
