@@ -8,6 +8,7 @@ class tee_test
 	public static void main(String args[]) throws java.io.IOException
 	{
 		System.err.println("Java app started");
+/*
 		int bytes_read = 0;
 
 		byte[] buffer = new byte[1024];
@@ -25,5 +26,6 @@ class tee_test
 		System.out.close();
 		System.err.println("Java app exits");
 		System.exit(0);
+*/
 	}
 }

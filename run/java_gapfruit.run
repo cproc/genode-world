@@ -4,22 +4,26 @@ if {![have_spec x86_64] && ![have_spec arm_v7]} {
 	exit 0
 }
 
-exec javac -d [absolute_path bin] [genode_dir]/repos/world/run/tee_test.java --release 9
-exec jar -c0fe [absolute_path bin/tee_test.jar] tee_test -C [absolute_path bin] tee_test.class
-exec tar -cf [absolute_path bin/tee_test.tar] -C [absolute_path bin] tee_test.jar
+exec javac -d [file normalize bin] [genode_dir]/repos/world/run/tee_test.java --release 9
+exec jar -c0fe [file normalize bin/tee_test.jar] tee_test -C [file normalize bin] tee_test.class
+exec tar -cf [file normalize bin/tee_test.tar] -C [file normalize bin] tee_test.jar
 
 set build_components {
 	core init
 	timer
+	app/jdk
+	lib/ld
 }
 
 build $build_components
 create_boot_directory
 
-lappend depot_archives [depot_user]/pkg/jdk
+#lappend depot_archives [depot_user]/pkg/jdk
 lappend depot_archives [depot_user]/src/chroot
 lappend depot_archives [depot_user]/src/fs_rom
 lappend depot_archives [depot_user]/src/lx_fs
+lappend depot_archives [depot_user]/src/vfs
+
 
 import_from_depot $depot_archives
 
@@ -145,14 +149,17 @@ set config {
 							<arg value="-XX:+NeverActAsServerClassMachine"/>
 							<arg value="-XX:+UnlockDiagnosticVMOptions"/>
 							<arg value="-XX:-ImplicitNullChecks"/>
-							<arg value="-XX:+CITime" />
+							<!--<arg value="-XX:+CITime" />-->
 							<!-- <arg value="-Xcomp"/> -->
 							<!-- <arg value="-XX:+PrintCompilation" /> -->
-							<!-- <arg value="-verbose"/> -->
-							<!-- <arg value="-Xlog:logging=debug"/> -->
+							<arg value="-Xint"/>
+<!--
+							<arg value="-verbose"/>
+							<arg value="-Xlog:logging=debug"/>
+-->
 							<arg value="-jar" />
 							<arg value="tee_test.jar" />
-							<libc stdin="/dev/stdin" stdout="/dev/log" stderr="/dev/log" rtc="/dev/rtc" />
+							<libc stdin="/dev/stdin" stdout="/dev/log" stderr="/dev/log" rtc="/dev/rtc"/>
 							<vfs rtc="/dev/rtc">
 								<dir name="dev">
 									<log/><null/><inline name="rtc">2000-01-01 00:00</inline>
@@ -196,10 +203,42 @@ install_config $config
 
 set boot_modules {
 	core init ld.lib.so timer tee_test.tar
+	java
+	java.lib.so
+	libc.lib.so
+	vfs.lib.so
+	jimage.lib.so
+	jli.lib.so
+	zlib.lib.so
+	jnet.lib.so
+	jvm.lib.so
+	jzip.lib.so
+	libm.lib.so
+	nio.lib.so
+	stdcxx.lib.so
+	verify.lib.so
+	management.lib.so
+	classes.tar
 }
 
 build_boot_image $boot_modules
 
 append qemu_args " -nographic -serial mon:stdio "
 
-run_genode_until "child \"java\" exited with exit value 0" 60
+run_genode_until forever
+
+run_genode_until "caps assigned to init" 10
+
+set t1_ms [clock milliseconds]
+
+set serial_id [output_spawn_id]
+run_genode_until "Java app started" 120 $serial_id
+
+set t2_ms [clock milliseconds]
+
+run_genode_until "child \"java\" exited with exit value 0" 60 $serial_id
+
+set result_ms [expr {$t2_ms - $t1_ms}]
+
+puts ""
+puts "Test duration: $result_ms ms."
