@@ -95,4 +95,19 @@ build_boot_image $boot_modules
 
 append qemu_args " -nographic -serial mon:stdio "
 
-run_genode_until "child \"java\" exited with exit value 0" 60
+run_genode_until "caps assigned to init" 10
+
+set t1_ms [clock milliseconds]
+
+set serial_id [output_spawn_id]
+run_genode_until "Hello, Genode!" 10 $serial_id
+
+set t2_ms [clock milliseconds]
+
+run_genode_until "child \"java\" exited with exit value 0" 60 $serial_id
+
+set result_ms [expr {$t2_ms - $t1_ms}]
+
+puts ""
+puts "Test duration: $result_ms ms."
+
