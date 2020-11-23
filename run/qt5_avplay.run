@@ -85,6 +85,7 @@ append boot_modules [qt5_boot_modules]
 
 append boot_modules {
 	mediafile
+	libQt5Widgets.lib.so
 }
 
 build_boot_image $boot_modules

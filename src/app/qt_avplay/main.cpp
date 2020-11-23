@@ -37,9 +37,10 @@ static inline void load_stylesheet()
 }
 
 extern void initialize_qt_gui(Genode::Env &);
-
+extern "C" void wait_for_continue();
 void Libc::Component::construct(Libc::Env &env)
 {
+wait_for_continue();
 	Libc::with_libc([&] {
 
 		qpa_init(env);
