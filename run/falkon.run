@@ -24,6 +24,9 @@ append build_components [qt5_build_components]
 append build_components {
 	app/falkon
 	lib/ld
+	lib/freebl3
+	lib/nssckbi
+	lib/softokn3
 	lib/vfs/lwip
 	lib/vfs/jitterentropy
 	lib/vfs/pipe
@@ -96,7 +99,7 @@ append config {
 						<terminal name="urandom"/>
 
 					<!--<fs/>-->
-					<inline name="rtc">2018-01-01 00:01</inline> 
+					<inline name="rtc">2021-06-10 00:01</inline> 
 				</dir>
 				<dir name="shm"> <qtwebengine_shm/> </dir>
 				<dir name="socket">
@@ -111,6 +114,7 @@ append config {
 				<tar name="qt5_libqsvg.tar"/>
 				<tar name="qt5_webengine_qml.tar"/>
 				<tar name="qt5_webengine_resources.tar"/>
+				<tar name="qt5_webengine_translations.tar"/>
 				<tar name="falkon_theme.tar"/>
 				<ram/>
 			</vfs>
@@ -151,6 +155,7 @@ append boot_modules {
 	expat.lib.so
 	falkon
 	falkon_theme.tar
+	freebl3.lib.so
 	glapi.lib.so
 	jitter_sponge
 	ld.lib.so
@@ -178,6 +183,8 @@ append boot_modules {
 	libqtwebengineplugin.lib.so
 	libwindowplugin.lib.so
 	mesa.lib.so
+	nss3.lib.so
+	nssckbi.lib.so
 	qt5_component.lib.so
 	qt5_declarative_qml.tar
 	qt5_libqgenode.tar
@@ -185,6 +192,8 @@ append boot_modules {
 	qt5_libqsvg.tar
 	qt5_webengine_qml.tar
 	qt5_webengine_resources.tar
+	qt5_webengine_translations.tar
+	softokn3.lib.so
 	stdcxx.lib.so
 	vfs
 	vfs.lib.so
