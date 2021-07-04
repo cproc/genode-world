@@ -29,6 +29,7 @@ append build_components {
 	lib/softokn3
 	lib/vfs/lwip
 	lib/vfs/jitterentropy
+	lib/vfs/oss
 	lib/vfs/pipe
 	lib/vfs/qtwebengine_shm
 	server/jitter_sponge
@@ -78,10 +79,12 @@ append config {
 		</provides>
 	</start>
 
+<!--
 	<start name="top">
 		<resource name="RAM" quantum="2M"/>
 		<config period_ms="2000"/>
 	</start>
+-->
 
 	<start name="falkon" caps="10000">
 		<resource name="RAM" quantum="2G"/>
@@ -99,7 +102,8 @@ append config {
 						<terminal name="urandom"/>
 
 					<!--<fs/>-->
-					<inline name="rtc">2021-06-10 00:01</inline> 
+					<inline name="rtc">2021-06-29 00:01</inline> 
+					<oss name="dsp"/>
 				</dir>
 				<dir name="shm"> <qtwebengine_shm/> </dir>
 				<dir name="socket">
@@ -181,6 +185,7 @@ append boot_modules {
 	libqsvg.lib.so
 	libqtquick2plugin.lib.so
 	libqtwebengineplugin.lib.so
+	libsndio.lib.so
 	libwindowplugin.lib.so
 	mesa.lib.so
 	nss3.lib.so
@@ -199,6 +204,7 @@ append boot_modules {
 	vfs.lib.so
 	vfs_jitterentropy.lib.so
 	vfs_lwip.lib.so
+	vfs_oss.lib.so
 	vfs_pipe.lib.so
 	vfs_qtwebengine_shm.lib.so
 	top

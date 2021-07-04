@@ -18,6 +18,11 @@ proc fb_drv_binary { } {
 	return no_fb_drv_available
 }
 
+proc use_audio_drv { } {
+	if {[have_spec linux]} { return false }
+	return true
+}
+
 proc use_fb_drv { } {
 	if {[have_spec linux]} { return false }
 	return true
@@ -71,10 +76,11 @@ proc drivers_build_components { } {
 	lappend build_components server/nic_router
 
 	lappend build_components drivers/framebuffer
-	lappend_if [use_fb_sdl]  build_components drivers/framebuffer/sdl
-	lappend_if [use_ps2_drv] build_components drivers/ps2
-	lappend_if [use_usb_drv] build_components drivers/usb_host
-	lappend_if [use_usb_drv] build_components drivers/usb_hid
+	lappend_if [use_audio_drv] build_components drivers/audio
+	lappend_if [use_fb_sdl]    build_components drivers/framebuffer/sdl
+	lappend_if [use_ps2_drv]   build_components drivers/ps2
+	lappend_if [use_usb_drv]   build_components drivers/usb_host
+	lappend_if [use_usb_drv]   build_components drivers/usb_hid
 
 	return $build_components
 }
@@ -340,6 +346,15 @@ proc drivers_start_nodes { } {
 		</start>
 	}
 	
+	append_if [use_audio_drv] start_nodes {
+		<start name="audio_drv" ld="yes">
+			<binary name="} [audio_drv_binary] {"/>
+			<resource name="RAM" quantum="8M"/>
+			<provides> <service name="Audio_out"/> </provides>
+			<config />
+		</start>
+	}
+
 	return $start_nodes
 }
 
@@ -362,10 +377,11 @@ proc drivers_boot_modules { } {
 	lappend boot_modules [nic_drv_binary]
 
 	lappend boot_modules [fb_drv_binary]
-	lappend_if [use_fb_sdl]  boot_modules fb_sdl
-	lappend_if [use_ps2_drv] boot_modules ps2_drv
-	lappend_if [use_usb_drv] boot_modules [usb_drv_binary]
-	lappend_if [use_usb_drv] boot_modules usb_hid_drv
+	lappend_if [use_audio_drv] boot_modules [audio_drv_binary]
+	lappend_if [use_fb_sdl]    boot_modules fb_sdl
+	lappend_if [use_ps2_drv]   boot_modules ps2_drv
+	lappend_if [use_usb_drv]   boot_modules [usb_drv_binary]
+	lappend_if [use_usb_drv]   boot_modules usb_hid_drv
 
 	return $boot_modules
 }
