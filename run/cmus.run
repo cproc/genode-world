@@ -28,6 +28,7 @@ set build_components {
 	lib/cmus/ip/vorbis
 	lib/cmus/op/oss
 	lib/cmus/op/sndio
+	server/black_hole
 }
 
 source ${genode_dir}/repos/base/run/platform_drv.inc
@@ -184,11 +185,24 @@ append config {
 		</route>
 	</start>
 
+<!--
 	<start name="audio_drv" ld="yes">
 		<binary name="} [audio_drv_binary] {"/>
 		<resource name="RAM" quantum="8M"/>
 		<provides> <service name="Audio_out"/> </provides>
 		<config />
+	</start>
+-->
+
+
+	<start name="black_hole">
+		<resource name="RAM" quantum="8M"/>
+		<provides>
+			<service name="Audio_out"/>
+		</provides>
+		<config>
+			<audio_out/>
+		</config>
 	</start>
 
 	<start name="cmus" caps="200">
@@ -282,6 +296,8 @@ append boot_modules {
 	rc
 
 	vfs_oss.lib.so foo.mp3
+
+	black_hole
 }
 
 # platform-specific modules
