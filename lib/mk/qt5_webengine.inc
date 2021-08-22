@@ -31,15 +31,15 @@ built.tag: qmake_prepared.tag
 		-qt-webengine-webp \
 		-no-webengine-pepper-plugins \
 		-no-webengine-printing-and-pdf \
-		-no-webengine-proprietary-codecs \
 		-no-webengine-pulseaudio \
 		-no-webengine-spellchecker \
 		-no-webengine-native-spellchecker \
 		-no-webengine-extensions \
-		-no-webengine-webrtc \
 		-no-webengine-geolocation \
 		-no-webengine-v8-snapshot \
 		-no-webengine-kerberos \
+		-webengine-proprietary-codecs \
+		-webengine-webrtc \
 		-webengine-widgets \
 		-webengine-qml \
 		$(QT5_OUTPUT_FILTER)
