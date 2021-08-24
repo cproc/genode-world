@@ -351,7 +351,10 @@ proc drivers_start_nodes { } {
 		<start name="audio_drv" ld="yes">
 			<binary name="} [audio_drv_binary] {"/>
 			<resource name="RAM" quantum="8M"/>
-			<provides> <service name="Audio_out"/> </provides>
+			<provides>
+				<service name="Audio_out"/>
+				<service name="Audio_in"/>
+			</provides>
 			<config />
 		</start>
 	}
