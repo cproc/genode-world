@@ -12,6 +12,10 @@ source ${genode_dir}/repos/base/run/platform_drv.inc
 # Helper functions
 #
 
+# x260
+proc libuvc_vendor_id {}  { return "0x5986" }
+proc libuvc_product_id {} { return "0x0706" }
+
 proc fb_drv_binary { } {
 	if {[have_spec x86]}        { return vesa_fb_drv }
 	if {[have_board imx8q_evk]} { return imx8_fb_drv }
@@ -329,6 +333,8 @@ proc drivers_start_nodes { } {
 			<config bios_handoff="yes">
 				<report devices="yes"/>
 				<policy label_prefix="usb_hid_drv" class="0x3"/>
+				<policy label_suffix="usb_webcam -> usb_device"
+				        vendor_id="} [libuvc_vendor_id] {" product_id="} [libuvc_product_id] {"/>
 			</config>
 			<route>
 				<service name="Report"> <child name="wm_report_rom"/> </service>
@@ -344,6 +350,18 @@ proc drivers_start_nodes { } {
 				<service name="Event"> <child name="event_filter" label="usb"/> </service>
 				<any-service> <parent/> <any-child/> </any-service>
 			</route>
+		</start>
+
+		<start name="webcam" caps="800" priority="-1">
+			<binary name="init"/>
+			<resource name="RAM" quantum="64MB"/>
+			<route>
+				<service name="ROM" label="config"> <parent label="usb_webcam.config"/> </service>
+				<service name="Timer"> <child name="timer"/> </service>
+				<service name="Usb"> <child name="usb_drv"/> </service>
+				<any-service> <parent /> </any-service>
+			</route>
+			<provides> <service name="Capture"/> <service name="Report"/> </provides>
 		</start>
 	}
 	

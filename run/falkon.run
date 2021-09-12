@@ -13,7 +13,8 @@ source ${genode_dir}/repos/world/run/qt5_common_tmp.inc
 import_from_depot [depot_user]/src/qt5_base \
                   [depot_user]/src/qt5_component \
                   [depot_user]/src/vfs_jitterentropy \
-                  [depot_user]/src/vfs_lwip
+                  [depot_user]/src/vfs_lwip \
+                  [depot_user]/pkg/usb_webcam
 
 #
 # Build
@@ -27,6 +28,7 @@ append build_components {
 	lib/freebl3
 	lib/nssckbi
 	lib/softokn3
+	lib/vfs/capture
 	lib/vfs/lwip
 	lib/vfs/jitterentropy
 	lib/vfs/oss
@@ -104,6 +106,7 @@ append config {
 					<!--<fs/>-->
 					<inline name="rtc">2021-09-06 00:01</inline> 
 					<oss name="dsp"/>
+					<capture name="capture"/>
 				</dir>
 				<dir name="shm"> <qtwebengine_shm/> </dir>
 				<dir name="socket">
@@ -141,6 +144,7 @@ append config {
 		</config>
 		<route>
 			<service name="Gui"> <child name="wm"/> </service>
+			<service name="Capture"> <child name="webcam"/> </service>
 			<service name="Nic"> <child name="nic_router"/> </service>
 			<service name="Report" label="shape">
 				<child name="pointer" label="wm -> falkon -> shape"/>
@@ -208,6 +212,7 @@ append boot_modules {
 	stdcxx.lib.so
 	vfs
 	vfs.lib.so
+	vfs_capture.lib.so
 	vfs_jitterentropy.lib.so
 	vfs_lwip.lib.so
 	vfs_oss.lib.so
