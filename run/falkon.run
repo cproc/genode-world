@@ -136,6 +136,8 @@ append config {
 		</config>
 		<route>
 			<service name="Gui"> <child name="wm"/> </service>
+			<service name="Audio_out"> <child name="black_hole"/> </service>
+			<!--<service name="Audio_in"> <child name="black_hole"/> </service>-->
 			<service name="Nic"> <child name="nic_router"/> </service>
 			<service name="Report" label="shape">
 				<child name="pointer" label="wm -> falkon -> shape"/>
