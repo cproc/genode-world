@@ -77,6 +77,7 @@ proc drivers_build_components { } {
 	lappend build_components server/nic_router
 
 	lappend build_components drivers/framebuffer
+	lappend build_components server/black_hole
 	lappend_if [use_audio_drv] build_components drivers/audio
 	lappend_if [use_fb_sdl]    build_components drivers/framebuffer/sdl
 	lappend_if [use_ps2_drv]   build_components drivers/ps2
@@ -306,6 +307,20 @@ proc drivers_start_nodes { } {
 				<card type="fsl,imx6sx-fec" mii="rgmii" irq="152" mmio="0x30be0000"/>
 			</config>
 		</start>
+
+		<start name="black_hole">
+			<resource name="RAM" quantum="8M"/>
+			<provides>
+				<service name="Audio_out"/>
+				<service name="Audio_in"/>
+				<service name="Capture"/>
+			</provides>
+			<config>
+				<audio_out/>
+				<audio_in/>
+				<capture/>
+			</config>
+		</start>
 	}
 
 	append_if [use_ps2_drv] start_nodes {
@@ -379,6 +394,7 @@ proc drivers_boot_modules { } {
 	lappend boot_modules special.chargen
 	lappend boot_modules nic_router
 	lappend boot_modules [nic_drv_binary]
+	lappend boot_modules black_hole
 
 	lappend_if [use_fb_drv]    boot_modules [fb_drv_binary]
 	lappend_if [use_audio_drv] boot_modules [audio_drv_binary]
