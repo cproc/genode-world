@@ -32,6 +32,7 @@ built.tag: qmake_prepared.tag
 		-no-webengine-pepper-plugins \
 		-no-webengine-printing-and-pdf \
 		-no-webengine-pulseaudio \
+		-no-webengine-sndio \
 		-no-webengine-spellchecker \
 		-no-webengine-native-spellchecker \
 		-no-webengine-extensions \
