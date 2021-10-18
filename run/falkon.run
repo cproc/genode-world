@@ -13,7 +13,8 @@ source ${genode_dir}/repos/world/run/qt5_common_tmp.inc
 import_from_depot [depot_user]/src/qt5_base \
                   [depot_user]/src/qt5_component \
                   [depot_user]/src/vfs_jitterentropy \
-                  [depot_user]/src/vfs_lwip
+                  [depot_user]/src/vfs_lwip \
+                  [depot_user]/pkg/usb_webcam
 
 #
 # Build
@@ -27,6 +28,7 @@ append build_components {
 	lib/freebl3
 	lib/nssckbi
 	lib/softokn3
+	lib/vfs/capture
 	lib/vfs/lwip
 	lib/vfs/jitterentropy
 	lib/vfs/oss
@@ -72,12 +74,14 @@ append config {
 	</start>
 -->
 
+<!--
 	<start name="jitter_sponge">
 		<resource name="RAM" quantum="1M"/>
 		<provides>
 			<service name="Terminal"/>
 		</provides>
 	</start>
+-->
 
 <!--
 	<start name="top">
@@ -93,17 +97,18 @@ append config {
 				<dir name="dev">
 					<dir name="pipe"> <pipe/> </dir>
 					<log/>
-					<!--
+
 						<jitterentropy name="random"/>
 						<jitterentropy name="urandom"/>
-					-->
 
+<!--
 						<terminal name="random"/>
 						<terminal name="urandom"/>
-
+-->
 					<!--<fs/>-->
 					<inline name="rtc">2021-10-18 00:01</inline> 
 					<oss name="dsp"/>
+					<capture/>
 				</dir>
 				<dir name="shm"> <qtwebengine_shm/> </dir>
 				<dir name="socket">
@@ -142,7 +147,8 @@ append config {
 		<route>
 			<service name="Gui"> <child name="wm"/> </service>
 			<service name="Audio_out"> <child name="black_hole"/> </service>
-			<!--<service name="Audio_in"> <child name="black_hole"/> </service>-->
+			<service name="Audio_in"> <child name="black_hole"/> </service>
+			<service name="Capture"> <child name="black_hole"/> </service>
 			<service name="Nic"> <child name="nic_router"/> </service>
 			<service name="Report" label="shape">
 				<child name="pointer" label="wm -> falkon -> shape"/>
@@ -210,6 +216,7 @@ append boot_modules {
 	stdcxx.lib.so
 	vfs
 	vfs.lib.so
+	vfs_capture.lib.so
 	vfs_jitterentropy.lib.so
 	vfs_lwip.lib.so
 	vfs_oss.lib.so
