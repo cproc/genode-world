@@ -12,13 +12,19 @@ source ${genode_dir}/repos/base/run/platform_drv.inc
 # Helper functions
 #
 
-# x260
-proc libuvc_vendor_id {}  { return "0x5986" }
-proc libuvc_product_id {} { return "0x0706" }
+proc libuvc_vendor_id {} {
+	if {[have_spec x86]}        { return "0x5986" }
+	if {[have_board imx8q_evk]} { return "0x046d" }
+}
+
+proc libuvc_product_id {} {
+	if {[have_spec x86]}        { return "0x0706" }
+	if {[have_board imx8q_evk]} { return "0x09c1" }
+}
 
 proc fb_drv_binary { } {
 	if {[have_spec x86]}        { return vesa_fb_drv }
-	if {[have_board imx8q_evk]} { return imx8_fb_drv }
+	if {[have_board imx8q_evk]} { return imx8mq_fb_drv }
 	return no_fb_drv_available
 }
 
@@ -55,7 +61,10 @@ proc use_usb_drv { } {
 
 proc usb_drv_binary { } {
 	if {[have_spec x86]}        { return x86_pc_usb_host_drv    }
-	if {[have_board imx8q_evk]} { return imx8q_evk_usb_host_drv }
+	if {[have_board imx8q_evk]} {
+		#return imx8q_evk_usb_host_drv
+		return imx8mq_usb_host_drv
+	}
 	return no_usb_drv_available
 }
 
@@ -291,7 +300,7 @@ proc drivers_start_nodes { } {
 				<domain name="downlink" interface="10.0.3.1/24">
 
 					<dhcp-server ip_first="10.0.3.2" ip_last="10.0.3.2">
-						<dns-server ip="8.8.8.8"/>
+						<dns-server ip="10.0.0.2"/>
 					</dhcp-server>
 
 					<tcp dst="0.0.0.0/0"><permit-any domain="uplink" /></tcp>
@@ -315,13 +324,13 @@ proc drivers_start_nodes { } {
 		<start name="black_hole">
 			<resource name="RAM" quantum="8M"/>
 			<provides>
-				<service name="Audio_out"/>
 				<service name="Audio_in"/>
+				<service name="Audio_out"/>
 				<service name="Capture"/>
 			</provides>
 			<config>
-				<audio_out/>
 				<audio_in/>
+				<audio_out/>
 				<capture/>
 			</config>
 		</start>
@@ -343,7 +352,7 @@ proc drivers_start_nodes { } {
 	append_if [use_usb_drv] start_nodes {
 		<start name="usb_drv" caps="150">
 			<binary name="} [usb_drv_binary] {"/>
-			<resource name="RAM" quantum="12M"/>
+			<resource name="RAM" quantum="16M"/>
 			<provides> <service name="Usb"/> </provides>
 			<config bios_handoff="yes">
 				<report devices="yes"/>
@@ -352,7 +361,11 @@ proc drivers_start_nodes { } {
 				        vendor_id="} [libuvc_vendor_id] {" product_id="} [libuvc_product_id] {"/>
 			</config>
 			<route>
+				<service name="ROM" label="dtb">
+					<parent label="imx8mq_usb_host_drv-imx8q_evk.dtb"/>
+				</service>
 				<service name="Report"> <child name="wm_report_rom"/> </service>
+				<!--<service name="Platform"> <child name="platform_drv"/> </service>-->
 				<any-service> <parent/> <any-child/> </any-service>
 			</route>
 		</start>
@@ -367,7 +380,7 @@ proc drivers_start_nodes { } {
 			</route>
 		</start>
 
-		<start name="webcam" caps="800" priority="-1">
+		<start name="webcam" caps="800">
 			<binary name="init"/>
 			<resource name="RAM" quantum="64MB"/>
 			<route>
@@ -414,12 +427,13 @@ proc drivers_boot_modules { } {
 	lappend boot_modules [nic_drv_binary]
 	lappend boot_modules black_hole
 
-	lappend_if [use_fb_drv]    boot_modules [fb_drv_binary]
-	lappend_if [use_audio_drv] boot_modules [audio_drv_binary]
-	lappend_if [use_fb_sdl]    boot_modules fb_sdl
-	lappend_if [use_ps2_drv]   boot_modules ps2_drv
-	lappend_if [use_usb_drv]   boot_modules [usb_drv_binary]
-	lappend_if [use_usb_drv]   boot_modules usb_hid_drv
+	lappend_if [use_fb_drv]           boot_modules [fb_drv_binary]
+	lappend_if [use_audio_drv]        boot_modules [audio_drv_binary]
+	lappend_if [use_fb_sdl]           boot_modules fb_sdl
+	lappend_if [use_ps2_drv]          boot_modules ps2_drv
+	lappend_if [use_usb_drv]          boot_modules [usb_drv_binary]
+	lappend_if [have_board imx8q_evk] boot_modules imx8mq_usb_host_drv-imx8q_evk.dtb
+	lappend_if [use_usb_drv]          boot_modules usb_hid_drv
 
 	return $boot_modules
 }
