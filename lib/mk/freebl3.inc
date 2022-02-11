@@ -1,7 +1,7 @@
 include $(call select_from_repositories,lib/mk/nss3_common.inc)
 
 FREEBL_DIR := $(NSS_PORT_DIR)/nss/lib/freebl
-LIBS       += libc
+LIBS       += libc jemalloc
 
 INC_DIR += $(FREEBL_DIR)/mpi \
            $(FREEBL_DIR)/verified/kremlin/include \

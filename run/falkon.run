@@ -245,6 +245,7 @@ append boot_modules {
 	trace_logger
 	null
 	libusb.lib.so
+	jemalloc.lib.so
 }
 
 build_boot_image $boot_modules
