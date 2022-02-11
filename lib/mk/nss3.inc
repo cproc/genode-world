@@ -2,7 +2,7 @@ include $(call select_from_repositories,lib/mk/nss3_common.inc)
 
 NSPR_DIR := $(NSS_PORT_DIR)/nspr
 NSS_DIR  := $(NSS_PORT_DIR)/nss
-LIBS     += libc
+LIBS     += libc jemalloc
 
 INC_DIR += $(NSPR_DIR)/pr/include \
            $(NSPR_DIR)/pr/include/private \

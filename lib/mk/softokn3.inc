@@ -1,7 +1,7 @@
 include $(call select_from_repositories,lib/mk/nss3_common.inc)
 
 SOFTOKEN_DIR := $(NSS_PORT_DIR)/nss/lib/softoken
-LIBS         += libc
+LIBS         += libc jemalloc
 
 INC_DIR += $(NSS_PORT_DIR)/nss/lib/sqlite
 
