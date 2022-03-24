@@ -215,7 +215,6 @@ append boot_modules {
 	libqsvg.lib.so
 	libqtquick2plugin.lib.so
 	libqtwebengineplugin.lib.so
-	libsndio.lib.so
 	libwindowplugin.lib.so
 	mesa.lib.so
 	nss3.lib.so
