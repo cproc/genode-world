@@ -28,6 +28,7 @@ append build_components {
 	lib/freebl3
 	lib/nssckbi
 	lib/softokn3
+	lib/vfs/capture
 	lib/vfs/lwip
 	lib/vfs/jitterentropy
 	lib/vfs/libusb
@@ -130,6 +131,7 @@ append config {
 					<!--<fs/>-->
 					<inline name="rtc">2022-03-24 00:01</inline> 
 					<oss name="dsp"/>
+					<capture/>
 				</dir>
 				<dir name="shm"> <qtwebengine_shm/> </dir>
 				<dir name="socket">
@@ -231,6 +233,7 @@ append boot_modules {
 	stdcxx.lib.so
 	vfs
 	vfs.lib.so
+	vfs_capture.lib.so
 	vfs_jitterentropy.lib.so
 	vfs_libusb.lib.so
 	vfs_lwip.lib.so
