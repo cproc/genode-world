@@ -1,0 +1,8 @@
+LICENSE := LGPL
+VERSION := xenial-reduced
+
+DOWNLOADS := morph-browser.git
+
+URL(morph-browser) := https://github.com/cproc/morph-browser.git
+REV(morph-browser) := $(VERSION)
+DIR(morph-browser) := src/app/morph-browser
