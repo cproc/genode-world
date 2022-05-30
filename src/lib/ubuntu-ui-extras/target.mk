@@ -1,0 +1,12 @@
+UBUNTU_UI_EXTRAS_PORT_DIR = $(call select_from_ports,ubuntu-ui-extras)/src/lib/ubuntu-ui-extras
+
+CMAKE_LISTS_DIR = $(UBUNTU_UI_EXTRAS_PORT_DIR)
+
+#CMAKE_TARGET_BINARIES = test-qt_core
+
+QT5_PORT_LIBS = libQt5Core libQt5Gui libQt5Widgets libQt5Network libQt5Test libQt5Xml
+QT5_PORT_LIBS += libQt5Qml libQt5Quick
+
+LIBS = libc libm qt5_component stdcxx $(QT5_PORT_LIBS)
+
+include $(call select_from_repositories,lib/import/import-qt5_cmake.mk)
