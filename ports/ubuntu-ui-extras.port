@@ -1,0 +1,8 @@
+LICENSE := LGPL
+VERSION := xenial-reduced
+
+DOWNLOADS := ubuntu-ui-extras.git
+
+URL(ubuntu-ui-extras) := https://github.com/cproc/ubuntu-ui-extras.git
+REV(ubuntu-ui-extras) := $(VERSION)
+DIR(ubuntu-ui-extras) := src/lib/ubuntu-ui-extras
