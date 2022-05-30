@@ -302,7 +302,7 @@ proc drivers_start_nodes { } {
 				<domain name="downlink" interface="10.0.3.1/24">
 
 					<dhcp-server ip_first="10.0.3.2" ip_last="10.0.3.2">
-						<dns-server ip="10.0.0.2"/>
+						<dns-server ip="192.168.2.1"/>
 					</dhcp-server>
 
 					<tcp dst="0.0.0.0/0"><permit-any domain="uplink" /></tcp>
