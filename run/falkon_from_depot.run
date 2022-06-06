@@ -1,0 +1,159 @@
+source ${genode_dir}/repos/libports/run/qt5_common.inc
+
+import_from_depot [depot_user]/src/black_hole \
+                  [depot_user]/src/falkon \
+                  [depot_user]/src/jitter_sponge \
+                  [depot_user]/src/nss3 \
+                  [depot_user]/src/openssl \
+                  [depot_user]/src/qt5_component \
+                  [depot_user]/src/qt5_declarative \
+                  [depot_user]/src/qt5_svg \
+                  [depot_user]/src/qt5_webengine \
+                  [depot_user]/src/qt5_webchannel \
+                  [depot_user]/src/vfs_capture \
+                  [depot_user]/src/vfs_jitterentropy \
+                  [depot_user]/src/vfs_lwip \
+                  [depot_user]/src/vfs_oss \
+                  [depot_user]/src/vfs_qtwebengine_shm
+
+#
+# Generate config
+#
+
+append config {
+<config prio_levels="4">
+	<parent-provides>}
+append config [qt5_parent_provides]
+append config {
+	</parent-provides>
+	<default caps="100"/>
+	<default-route>
+		<any-service> <parent/> <any-child/> </any-service>
+	</default-route>}
+
+append config [qt5_start_nodes]
+
+append config {
+
+<!--
+	<start name="vfs" caps="250">
+		<resource name="RAM" quantum="256M"/>
+		<provides> <service name="File_system"/> </provides>
+		<config>
+			<vfs>
+				<jitterentropy name="random"/>
+				<jitterentropy name="urandom"/>
+			</vfs>
+			<default-policy writeable="no" root="/"/>
+		</config>
+	</start>
+-->
+	<start name="jitter_sponge">
+		<resource name="RAM" quantum="1M"/>
+		<provides>
+			<service name="Terminal"/>
+		</provides>
+	</start>
+
+	<start name="black_hole" caps="250">
+		<resource name="RAM" quantum="256M"/>
+		<provides>
+			<service name="Audio_in"/>
+			<service name="Audio_out"/>
+			<service name="Nic"/>
+		</provides>
+		<config>
+			<audio_in/>
+			<audio_out/>
+			<nic/>
+		</config>
+	</start>
+
+	<start name="falkon" caps="10000" priority="-1">
+		<resource name="RAM" quantum="2G"/>
+		<config ld_verbose="yes">
+			<vfs>
+				<dir name="dev">
+					<dir name="pipe"> <pipe/> </dir>
+					<log/>
+<!--
+						<jitterentropy name="random"/>
+						<jitterentropy name="urandom"/>
+-->
+
+						<terminal name="random"/>
+						<terminal name="urandom"/>
+
+					<!--<fs/>-->
+					<inline name="rtc">2022-06-14 00:01</inline> 
+					<oss name="dsp"/>
+					<capture/>
+				</dir>
+				<dir name="shm"> <qtwebengine_shm/> </dir>
+				<dir name="socket">
+					<lwip dhcp="yes"/>
+					<!--<fs/>-->
+				</dir>
+				<dir name="tmp"> <ram/> </dir>
+				<tar name="qt5_dejavusans.tar"/>
+				<tar name="qt5_declarative_qml.tar"/>
+				<tar name="qt5_libqgenode.tar"/>
+				<tar name="qt5_libqsqlite.tar"/>
+				<tar name="qt5_libqsvg.tar"/>
+				<tar name="qt5_webengine_qml.tar"/>
+				<tar name="qt5_webengine_resources.tar"/>
+				<tar name="qt5_webengine_translations.tar"/>
+				<tar name="falkon_theme.tar"/>
+				<ram/>
+			</vfs>
+			<libc stdout="/dev/log" stderr="/dev/log" pipe="/dev/pipe" rtc="/dev/rtc" socket="/socket" pid="1">
+				<mmap align_log2="21"/>
+				<pthread placement="single-cpu"/>
+			</libc>
+			<arg value="falkon"/>
+			<arg value="--single-process"/>
+			<arg value="--no-sandbox"/>
+			<arg value="--disable-gpu-compositing"/>
+			<arg value="--enable-logging"/>
+			<arg value="--log-level=3"/>
+			<arg value="--v=0"/>
+			<env key="QT_QUICK_BACKEND" value="software"/>
+		</config>
+		<route>
+			<service name="Gui"> <child name="nitpicker"/> </service>
+			<service name="Audio_out"> <child name="black_hole"/> </service>
+			<service name="Audio_in"> <child name="black_hole"/> </service>
+			<service name="Capture"> <child name="black_hole"/> </service>
+			<service name="Nic"> <child name="black_hole"/> </service>
+			<service name="Report" label="shape">
+				<child name="pointer" label="wm -> falkon -> shape"/>
+			</service>
+			<service name="ROM" label="mesa_gpu_drv.lib.so"> <parent label="mesa_gpu-softpipe.lib.so" /> </service>
+			<any-service> <parent/> <any-child/> </any-service>
+		</route>
+	</start>
+</config>}
+
+install_config $config
+
+#
+# Boot modules
+#
+
+append boot_modules [qt5_boot_modules]
+
+build_boot_image $boot_modules
+
+
+proc qemu_nic_model {} {
+	if [have_spec x86]         { return e1000 }
+	if [have_spec lan9118]     { return lan9118 }
+	if [have_spec cadence_gem] { return cadence_gem }
+	return nic_model_missing
+}
+
+append qemu_args " -netdev user,id=net0 "
+append qemu_args " -net nic,model=[qemu_nic_model],netdev=net0 "
+
+
+run_genode_until forever
