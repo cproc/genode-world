@@ -61,7 +61,7 @@ struct Jitter_sponge::Generator
 	{
 		jitterentropy_init(alloc);
 		if (jent_entropy_init())
-			die("jitterentropy library could not be initialized!");
+			warning("jitterentropy library could not be initialized!");
 
 		jitter = jent_entropy_collector_alloc(0, 0);
 		if (!jitter)
