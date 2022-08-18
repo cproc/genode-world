@@ -290,7 +290,7 @@ proc drivers_start_nodes { } {
 				<policy label_prefix="morph-browser"  domain="downlink"/>
 				<policy label_prefix="nic_drv" domain="uplink"/>
 
-				<domain name="uplink">
+				<domain name="uplink" interface="10.0.10.2/24" gateway="10.0.10.1">
 
 					<nat domain="downlink"
 					     tcp-ports="16384"
