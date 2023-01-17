@@ -11,6 +11,8 @@
  * under the terms of the GNU Affero General Public License version 3.
  */
 
+#include <trace/probe.h>
+
 /* local includes */
 #include "session_requests.h"
 
@@ -131,10 +133,15 @@ class Jitter_sponge::Session_component final : public Genode::Rpc_object<Termina
 
 		Genode::size_t _read(Genode::size_t n)
 		{
-			_generator.mix();
+//GENODE_TRACE_CHECKPOINT_NAMED(n, "_read()");
+//			_generator.mix();
+//GENODE_TRACE_CHECKPOINT_NAMED(n, "_read(): check 1");
 			n = min(n, _io_buffer.size());
+//GENODE_TRACE_CHECKPOINT_NAMED(n, "_read(): check 2");
 			_generator.fetch(_io_buffer.local_addr<unsigned char>(), n);
-			_generator.mix();
+//GENODE_TRACE_CHECKPOINT_NAMED(n, "_read(): check 3");
+//			_generator.mix();
+//GENODE_TRACE_CHECKPOINT_NAMED(n, "_read() finished");
 			return n;
 		}
 
