@@ -1,14 +1,12 @@
-MY_BUILD_DIR := $(LIB_CACHE_DIR)/backtrace
-MY_TARGET := $(MY_BUILD_DIR)/.libs/libbacktrace.a
+LIBS = libbacktrace
 
-# to glue gnu_build.mk
-CUSTOM_TARGET_DEPS := finished.tag
+LIBBACKTRACE_A := $(LIB_CACHE_DIR)/libbacktrace/.libs/libbacktrace.a
 
-$(MY_TARGET): built.tag
-
-finished.tag: $(MY_TARGET)
-	@$(MSG_INST)$*
-	ln -sf $(MY_TARGET) $(MY_BUILD_DIR)/backtrace.lib.a
+finished.tag: backtrace.lib.a
+	@$(MSG_INST)$<
+	$(VERBOSE)ln -sf $(LIBBACKTRACE_A) $<
 	@touch $@
 
-include $(REP_DIR)/lib/mk/libbacktrace.inc
+ifeq ($(called_from_lib_mk),yes)
+all: finished.tag
+endif
