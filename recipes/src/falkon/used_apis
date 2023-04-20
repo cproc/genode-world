@@ -4,5 +4,7 @@ nss3
 openssl
 qt5
 qt5_component
+qt5_qml
+qt5_webengine
 so
 stdcxx
