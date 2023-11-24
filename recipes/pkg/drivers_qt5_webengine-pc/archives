@@ -1,0 +1,13 @@
+_/src/platform_drv
+_/src/acpi_drv
+_/src/ps2_drv
+_/src/pc_usb_host_drv
+_/src/usb_hid_drv
+_/src/vesa_drv
+_/src/report_rom
+_/src/rom_filter
+_/src/event_filter
+_/src/pci_decode
+_/src/ipxe_nic_drv
+_/src/bsd_audio_drv
+_/raw/drivers_qt5_webengine-pc
