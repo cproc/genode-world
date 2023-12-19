@@ -2,7 +2,7 @@ source ${genode_dir}/repos/world/run/qt5_webengine.inc
 
 import_from_depot [depot_user]/src/qt5_component \
                   [depot_user]/src/vfs_jitterentropy \
-                  [depot_user]/src/vfs_lwip \
+                  [depot_user]/src/vfs_lxip \
                   [depot_user]/pkg/usb_webcam
 
 #
@@ -16,7 +16,7 @@ append build_components {
 	lib/nssckbi
 	lib/softokn3
 	lib/vfs_capture
-	lib/vfs_lwip
+	lib/vfs_lxip
 	lib/vfs_jitterentropy
 	lib/vfs_libusb
 	lib/vfs_oss
@@ -56,7 +56,7 @@ append config {
 		<provides> <service name="File_system"/> </provides>
 		<config>
 			<vfs>
-				<lwip dhcp="yes"/>
+				<lxip dhcp="yes"/>
 			</vfs>
 			<default-policy writeable="yes" root="/"/>
 		</config>
@@ -102,7 +102,7 @@ append config {
 				</dir>
 				<dir name="shm"> <qtwebengine_shm/> </dir>
 				<dir name="socket">
-					<lwip dhcp="yes"/>
+					<lxip dhcp="yes"/>
 					<!--<fs/>-->
 				</dir>
 				<dir name="tmp"> <ram/> </dir>
@@ -208,7 +208,8 @@ append boot_modules {
 	vfs_capture.lib.so
 	vfs_jitterentropy.lib.so
 	vfs_libusb.lib.so
-	vfs_lwip.lib.so
+	lxip.lib.so
+	vfs_lxip.lib.so
 	vfs_oss.lib.so
 	vfs_pipe.lib.so
 	vfs_qtwebengine_shm.lib.so
