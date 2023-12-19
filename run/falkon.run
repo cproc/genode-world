@@ -50,7 +50,7 @@ append config [qt5_start_nodes]
 
 append config {
 
-<!--
+
 	<start name="vfs" caps="250">
 		<resource name="RAM" quantum="256M"/>
 		<provides> <service name="File_system"/> </provides>
@@ -61,7 +61,7 @@ append config {
 			<default-policy writeable="yes" root="/"/>
 		</config>
 	</start>
--->
+
 
 
 	<start name="jitter_sponge">
@@ -102,8 +102,8 @@ append config {
 				</dir>
 				<dir name="shm"> <qtwebengine_shm/> </dir>
 				<dir name="socket">
-					<lxip dhcp="yes"/>
-					<!--<fs/>-->
+					<!--<lxip dhcp="yes"/>-->
+					<fs/>
 				</dir>
 				<dir name="tmp"> <ram/> </dir>
 				<tar name="qt5_dejavusans.tar"/>
