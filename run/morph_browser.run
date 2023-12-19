@@ -6,7 +6,7 @@ import_from_depot \
                   [depot_user]/src/qt5_graphicaleffects \
                   [depot_user]/src/ubuntu_ui_extras \
                   [depot_user]/src/vfs_jitterentropy \
-                  [depot_user]/src/vfs_lwip \
+                  [depot_user]/src/vfs_lxip \
                   [depot_user]/pkg/usb_webcam \
                   [depot_user]/raw/ubuntu_themes \
                   [depot_user]/src/dummy_rtc_drv \
@@ -23,7 +23,7 @@ append build_components {
 	lib/softokn3
 	lib/vfs_capture
 	lib/vfs_gpu
-	lib/vfs_lwip
+	lib/vfs_lxip
 	lib/vfs_jitterentropy
 	lib/vfs_libusb
 	lib/vfs_oss
@@ -66,7 +66,7 @@ append config {
 		<provides> <service name="File_system"/> </provides>
 		<config>
 			<vfs>
-				<lwip dhcp="yes"/>
+				<lxip dhcp="yes"/>
 			</vfs>
 			<default-policy writeable="yes" root="/"/>
 		</config>
@@ -131,7 +131,7 @@ append config {
 				</dir>
 				<dir name="shm"> <qtwebengine_shm/> </dir>
 				<dir name="socket">
-					<lwip dhcp="yes"/>
+					<lxip dhcp="yes"/>
 					<!--<fs/>-->
 				</dir>
 				<dir name="tmp"> <ram/> </dir>
@@ -277,7 +277,8 @@ append boot_modules {
 	vfs.lib.so
 	vfs_jitterentropy.lib.so
 	vfs_libusb.lib.so
-	vfs_lwip.lib.so
+	lxip.lib.so
+	vfs_lxip.lib.so
 	vfs_pipe.lib.so
 	fs
 	black_hole
