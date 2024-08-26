@@ -1,4 +1,4 @@
-MIRROR_FROM_REP_DIR := lib/mk/libQt5WebChannel.mk
+MIRROR_FROM_REP_DIR := lib/mk/qt5_webchannel.mk
 
 content: $(MIRROR_FROM_REP_DIR)
 
