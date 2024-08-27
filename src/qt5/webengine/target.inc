@@ -1,5 +1,7 @@
+TARGET = qt5_webengine.qmake_target
+
 ifeq ($(filter-out $(SPECS),arm_64),)
-GENODE_QMAKE_CFLAGS += -march=armv8-a+crc+crypto
+CC_MARCH = -march=armv8-a+crc+crypto
 endif
 
 QT5_PORT_LIBS += libQt5Core libQt5Gui libQt5Network libQt5Widgets
@@ -97,6 +99,4 @@ build: qmake_prepared.tag qt5_so_files
 
 .PHONY: build
 
-ifeq ($(called_from_lib_mk),yes)
-all: build
-endif
+QT5_TARGET_DEPS = build

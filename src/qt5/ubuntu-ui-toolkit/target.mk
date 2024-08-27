@@ -1,11 +1,25 @@
-QT5_PORT_LIBS += libQt5Core libQt5Gui libQt5Network
+TARGET = ubuntu_ui_toolkit.qmake_target
+
+PORT_DIR := $(call select_from_ports,ubuntu-ui-toolkit)/src/lib/ubuntu-ui-toolkit
+
+QT5_PORT_LIBS += libQt5Core libQt5Gui libQt5Network libQt5Test libQt5Widgets
 QT5_PORT_LIBS += libQt5Qml libQt5QmlModels libQt5Quick
+QT5_PORT_LIBS += libQt5Svg
 
-LIBS = qt5_qmake egl expat libc libm mesa stdcxx
+GENODE_QMAKE_CFLAGS += -Wno-deprecated -Wno-deprecated-declarations -Wno-deprecated-copy
 
-INSTALL_LIBS = lib/libQt5WebChannel.lib.so
+LIBS = qt5_qmake libc libm mesa stdcxx
 
-BUILD_ARTIFACTS = $(notdir $(INSTALL_LIBS))
+INSTALL_LIBS = lib/libUbuntuGestures.lib.so \
+               lib/libUbuntuMetrics.lib.so \
+               lib/libUbuntuToolkit.lib.so \
+               qml/Ubuntu/Components/libUbuntuComponents.lib.so \
+               qml/Ubuntu/Components/Labs/libUbuntuComponentsLabs.lib.so \
+               qml/Ubuntu/Components/Styles/libUbuntuComponentsStyles.lib.so \
+               qml/Ubuntu/PerformanceMetrics/libUbuntuPerformanceMetrics.lib.so
+
+BUILD_ARTIFACTS = $(notdir $(INSTALL_LIBS)) \
+                  ubuntu-ui-toolkit_qml.tar
 
 build: qmake_prepared.tag qt5_so_files
 
@@ -15,7 +29,7 @@ build: qmake_prepared.tag qt5_so_files
 
 	$(VERBOSE)source env.sh && $(QMAKE) \
 		-qtconf build_dependencies/mkspecs/$(QT_PLATFORM)/qt.conf \
-		$(QT_DIR)/qtwebchannel/qtwebchannel.pro \
+		$(PORT_DIR)/ubuntu-sdk.pro \
 		$(QT5_OUTPUT_FILTER)
 
 	@#
@@ -46,8 +60,12 @@ build: qmake_prepared.tag qt5_so_files
 		ln -sf $(CURDIR)/install/qt/$${LIB}.debug $(PWD)/debug/; \
 	done
 
+	@#
+	@# create tar archives
+	@#
+
+	$(VERBOSE)tar chf $(PWD)/bin/ubuntu-ui-toolkit_qml.tar --exclude='*.lib.so' --transform='s/\.stripped//' -C install qt/qml
+
 .PHONY: build
 
-ifeq ($(called_from_lib_mk),yes)
-all: build
-endif
+QT5_TARGET_DEPS = build
