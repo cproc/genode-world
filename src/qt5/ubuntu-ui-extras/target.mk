@@ -1,3 +1,5 @@
+TARGET = ubuntu_ui_extras.cmake_target
+
 UBUNTU_UI_EXTRAS_PORT_DIR = $(call select_from_ports,ubuntu-ui-extras)/src/lib/ubuntu-ui-extras
 
 CMAKE_LISTS_DIR = $(UBUNTU_UI_EXTRAS_PORT_DIR)
@@ -18,6 +20,4 @@ build: build_with_cmake qt5_so_files
 
 BUILD_ARTIFACTS += ubuntu-ui-extras_qml.tar
 
-ifeq ($(called_from_lib_mk),yes)
-all: build
-endif
+QT5_TARGET_DEPS = build
