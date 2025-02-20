@@ -1,0 +1,211 @@
+source ${genode_dir}/repos/world/run/qt5_webengine.inc
+
+import_from_depot [depot_user]/src/qt5_component \
+                  [depot_user]/src/vfs_jitterentropy \
+                  [depot_user]/src/vfs_lwip \
+                  [depot_user]/pkg/black_hole \
+                  [depot_user]/pkg/usb_webcam
+
+#
+# Build
+#
+
+append build_components {
+	app/falkon
+	lib/ld
+	lib/egl
+	lib/expat
+	lib/freebl3
+	lib/libc
+	lib/libm
+	lib/libcrypto
+	lib/libdrm
+	lib/mesa
+	lib/nss3
+	lib/nssckbi
+	lib/qt5_component
+	lib/softokn3
+	lib/stdcxx
+	lib/vfs
+	lib/vfs_capture
+	lib/vfs_gpu
+	lib/vfs_lwip
+	lib/vfs_jitterentropy
+	lib/vfs_libusb
+	lib/vfs_oss
+	lib/vfs_pipe
+	lib/vfs_qtwebengine_shm
+	lib/vfs_xoroshiro
+	lib/zlib
+	qt5/base
+	qt5/declarative
+	qt5/svg
+	qt5/webchannel
+	qt5/webengine
+	server/vfs
+	app/top
+	app/usb_webcam
+}
+
+lappend_if [have_spec linux] build_components server/lx_fs
+
+build $build_components
+
+#
+# Generate config
+#
+
+append config {
+<config prio_levels="4">
+	<affinity-space width="2"/>
+	<parent-provides>}
+append config [qt5_parent_provides]
+append config {
+	</parent-provides>
+	<default caps="100"/>
+	<default-route>
+		<any-service> <parent/> <any-child/> </any-service>
+	</default-route>}
+
+append config [qt5_start_nodes]
+
+exec mkdir -p bin/falkon_qt5_fs
+
+append config {
+
+<!--
+	<start name="lx_fs" caps="200" ram="4M" ld="no">
+		<provides> <service name="File_system"/> </provides>
+		<config>
+			<default-policy writeable="yes" root="/falkon_qt5_fs"/>
+		</config>
+	</start>
+-->
+
+	<start name="black_hole">
+		<resource name="RAM" quantum="1M"/>
+		<provides>
+			<service name="Capture"/>
+			<service name="Play"/>
+			<service name="Record"/>
+		</provides>
+		<config>
+			<capture/>
+			<play/>
+			<record/>
+		</config>
+	</start>
+
+<!--
+	<start name="vfs" caps="250">
+		<resource name="RAM" quantum="256M"/>
+		<provides> <service name="File_system"/> </provides>
+		<config>
+			<vfs>
+				<lwip dhcp="yes"/>
+			</vfs>
+			<default-policy writeable="yes" root="/"/>
+		</config>
+	</start>
+-->
+
+<!--
+	<start name="top">
+		<resource name="RAM" quantum="2M"/>
+		<config period_ms="5000"/>
+	</start>
+-->
+
+	<start name="falkon" caps="10000" priority="-1">
+		<resource name="RAM" quantum="8G"/>
+		<affinity xpos="1" width="1"/>
+		<config ld_verbose="yes">
+			<vfs>
+				<dir name="dev">
+					<dir name="pipe"> <pipe/> </dir>
+					<log/>
+					<jitterentropy name="entropy"/>
+					<xoroshiro name="random" seed_path="/dev/entropy"/>
+					<xoroshiro name="urandom" seed_path="/dev/entropy"/>
+					<!--<fs/>-->
+					<inline name="rtc">2025-12-05 00:01</inline>
+					<oss name="dsp"/>
+<!--					<capture/>-->
+				</dir>
+				<dir name="shm"> <qtwebengine_shm/> </dir>
+				<dir name="socket">
+					<lwip dhcp="yes"/>
+					<!--<fs/>-->
+				</dir>
+				<dir name=".config"> <ram/> </dir>
+				<dir name="tmp"> <ram/> </dir>
+				<dir name="downloads"> <ram/> </dir>
+				<tar name="qt5_dejavusans.tar"/>
+				<tar name="qt5_declarative_qml.tar"/>
+				<tar name="qt5_libqgenode.tar"/>
+				<tar name="qt5_libqsqlite.tar"/>
+				<tar name="qt5_libqsvg.tar"/>
+				<tar name="qt5_webengine_qml.tar"/>
+				<tar name="qt5_webengine_resources.tar"/>
+				<tar name="qt5_webengine_translations.tar"/>
+				<tar name="falkon_theme.tar"/>
+				<ram/>
+			</vfs>
+			<libc stdout="/dev/log" stderr="/dev/log" pipe="/dev/pipe" rng="/dev/random" rtc="/dev/rtc" socket="/socket" pid="1">
+				<mmap align_log2="21"/>
+				<pthread placement="single-cpu"/>
+			</libc>
+			<arg value="falkon"/>
+			<arg value="--webEngineArgs"/>
+			<arg value="--single-process"/>
+			<arg value="--no-sandbox"/>
+			<arg value="--disable-gpu-compositing"/>
+			<arg value="--enable-logging"/>
+			<arg value="--log-level=3"/>
+			<arg value="--v=0"/>
+			<!--<arg value="- -use-fake-device-for-media-stream"/>-->
+			<arg value="https://genodians.org"/>
+			<!--<arg value="https://browserbench.org/JetStream"/>-->
+			<!--<arg value="https://browserbench.org/MotionMark1.3.1"/>-->
+			<!--<arg value="https://theanam.github.io/webaudio-oscilloscope"/>-->
+			<!--<arg value="https://janus-legacy.conf.meetecho.com/echotest.html"/>-->
+			<!--<arg value="https://meet.jit.si/GenodeTest4"/>-->
+			<!--<arg value="https://meet.jit.si"/>-->
+			<!--<arg value="https://meet.ffmuc.net"/>-->
+			<!--<arg value="https://www.youtube.com"/>-->
+			<!--<arg value="https://ftp.gnu.org/gnu/gcc"/>-->
+			<env key="QT_QUICK_BACKEND" value="software"/>
+			<!--<env key="QT_ENABLE_HIGHDPI_SCALING" value="1"/>-->
+			<!--<env key="QT_FONT_DPI" value="288"/>-->
+		</config>
+		<route>
+			<service name="Gui"> <child name="wm"/> </service>
+			<service name="Play"> <child name="drivers"/> </service>
+			<service name="Record"> <child name="drivers"/> </service>
+			<service name="Capture"> <child name="black_hole"/> </service>
+			<service name="Nic"> <child name="nic_router"/> </service>
+			<service name="Report" label="shape">
+				<child name="pointer" label="wm -> falkon -> shape"/>
+			</service>
+			<service name="ROM" label="mesa_gpu.lib.so"> <parent label="mesa_gpu-softpipe.lib.so" /> </service>
+			<any-service> <parent/> <any-child/> </any-service>
+		</route>
+	</start>
+</config>}
+
+install_config $config
+
+#
+# Boot modules
+#
+
+append boot_modules "[qt5_boot_modules] [build_artifacts]"
+
+lappend_if [have_spec linux] boot_modules falkon_qt5_fs
+
+build_boot_image $boot_modules
+
+append qemu_args "-m 4096"
+append_qemu_nic_args
+
+run_genode_until forever
