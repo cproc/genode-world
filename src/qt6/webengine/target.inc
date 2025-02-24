@@ -32,8 +32,6 @@ ifeq ($(filter-out $(SPECS),arm_64),)
 GENODE_CMAKE_SYSTEM_PROCESSOR="aarch64"
 else ifeq ($(filter-out $(SPECS),x86_64),)
 GENODE_CMAKE_SYSTEM_PROCESSOR="x86_64"
-else
-$(error Error: unsupported platform)
 endif
 
 build: cmake_prepared.tag qt6_so_files
