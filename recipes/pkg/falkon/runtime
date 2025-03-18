@@ -20,6 +20,7 @@
 		<record/>
 		<play/>
 		<capture/>
+		<rm/>
 	</requires>
 
 	<content>
