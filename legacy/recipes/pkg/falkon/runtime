@@ -30,7 +30,6 @@
 		<rom label="expat.lib.so"/>
 		<rom label="freebl3.lib.so"/>
 		<rom label="glapi.lib.so"/>
-		<rom label="jitter_sponge"/>
 		<rom label="libFalkonPrivate.lib.so"/>
 		<rom label="libQt5Core.lib.so"/>
 		<rom label="libQt5Gui.lib.so"/>
@@ -72,6 +71,7 @@
 		<rom label="vfs_oss.lib.so"/>
 		<rom label="vfs_pipe.lib.so"/>
 		<rom label="vfs_qtwebengine_shm.lib.so"/>
+		<rom label="vfs_xoroshiro.lib.so"/>
 		<rom label="zlib.lib.so"/>
 		<rom label="qt5_declarative_qml.tar"/>
 		<rom label="qt5_dejavusans.tar"/>

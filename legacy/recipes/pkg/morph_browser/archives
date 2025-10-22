@@ -4,7 +4,6 @@ _/raw/ubuntu_themes
 _/src/expat
 _/src/morph_browser
 _/src/init
-_/src/jitter_sponge
 _/src/libc
 _/src/libdrm
 _/src/mesa
@@ -29,4 +28,5 @@ _/src/vfs_lwip
 _/src/vfs_oss
 _/src/vfs_pipe
 _/src/vfs_qtwebengine_shm
+_/src/vfs_xoroshiro
 _/src/zlib
