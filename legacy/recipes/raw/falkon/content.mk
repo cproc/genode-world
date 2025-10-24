@@ -1,4 +1,4 @@
-content: init.config
+content: falkon.config
 
-init.config:
+falkon.config:
 	cp $(REP_DIR)/recipes/raw/falkon/$@ $@

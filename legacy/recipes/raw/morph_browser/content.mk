@@ -1,4 +1,4 @@
-content: init.config
+content: morph_browser.config
 
-init.config:
+morph_browser.config:
 	cp $(REP_DIR)/recipes/raw/morph_browser/$@ $@
