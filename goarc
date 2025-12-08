@@ -25,3 +25,6 @@ set version(_/pkg/mobile_network) 2025-10-23
 
 set version(_/pkg/unix)           2025-12-08
 set version(_/raw/unix)           2025-12-08
+
+set version(_/pkg/unix-git)       2025-12-08
+set version(_/raw/unix-git)       2025-12-08

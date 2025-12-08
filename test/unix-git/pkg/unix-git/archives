@@ -1,0 +1,12 @@
+genodelabs/src/curl
+genodelabs/src/libc
+genodelabs/src/libssh
+genodelabs/src/openssl
+genodelabs/src/pcre
+genodelabs/src/sed
+genodelabs/src/vfs_jitterentropy
+genodelabs/src/vfs_lwip
+genodelabs/src/zlib
+_/pkg/unix
+_/src/git
+_/src/vfs_xoroshiro
