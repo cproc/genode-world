@@ -1,0 +1,12 @@
+genodelabs/src/bash
+genodelabs/src/vfs
+genodelabs/src/fs_rom
+genodelabs/src/libc
+genodelabs/src/posix
+genodelabs/src/terminal
+genodelabs/raw/ttf-bitstream-vera-minimal
+genodelabs/src/vfs_ttf
+genodelabs/src/coreutils
+genodelabs/src/vfs_pipe
+genodelabs/src/vim
+genodelabs/src/ncurses
